@@ -9,60 +9,66 @@
 using namespace std;
 using namespace pqxx;
 
-void loadState(string filename, connection *C){
-string state_id, name, tmp;
-  std::ifstream ifs;
-  ifs.open(filename.c_str(), std::ifstream::in);
-  while (std::getline(ifs, tmp)) {
-    stringstream ss;
-    ss << tmp;
-    ss >> state_id >> name;
-    add_state(C, name);
-  }
-  ifs.close();  
-}
-void loadColor(string filename, connection *C){
-string color_id, name, tmp;
-  std::ifstream ifs;
-  ifs.open(filename.c_str(), std::ifstream::in);
-  while (std::getline(ifs, tmp)) {
-    stringstream ss;
-    ss << tmp;
-    ss >> color_id >> name;
-    add_color(C, name);
-  }
-  ifs.close();
-}
-void loadTeam(string filename, connection *C){
-string sql, tmp, name;
-  int team_id, state_id, color_id, wins, losses;
-  std::ifstream ifs;
-  ifs.open(filename.c_str(), std::ifstream::in);
-  while (std::getline(ifs, tmp)) {
-    stringstream ss;
-    ss << tmp;
-    ss >> team_id >> name >> state_id >> color_id >> wins >> losses;
-    add_team(C, name, state_id, color_id, wins, losses);
-  }
-  ifs.close();
-}
 void loadPlayer(string filename, connection *C){
-string tmp, first_name, last_name;
+  string first_name;
+  string last_name;
+  string temp;
   int player_id, team_id, uniform_num, mpg, ppg, rpg, apg;
   double spg, bpg;
   std::ifstream ifs;
   ifs.open(filename.c_str(), std::ifstream::in);
-  while (std::getline(ifs, tmp)) {
-    stringstream ss;
-    ss << tmp;
+  while (std::getline(ifs, temp)) {
+    stringstream ss(temp);
     ss >> player_id >> team_id >> uniform_num >> first_name >> last_name >>
-        mpg >> ppg >> rpg >> apg >> spg >> bpg;
+            mpg >> ppg >> rpg >> apg >> spg >> bpg;
     add_player(C, team_id, uniform_num, first_name, last_name, mpg, ppg, rpg,
                apg, spg, bpg);
   }
   ifs.close();
 }
 
+void loadTeam(string filename, connection *C){
+  string sql;
+  string temp;
+  string name;
+  int team_id, state_id, color_id, wins, losses;
+  std::ifstream ifs;
+  ifs.open(filename.c_str(), std::ifstream::in);
+  while (std::getline(ifs, temp)) {
+    stringstream ss(temp);
+    ss >> team_id >> name >> state_id >> color_id >> wins >> losses;
+    add_team(C, name, state_id, color_id, wins, losses);
+  }
+  ifs.close();
+}
+
+void loadState(string filename, connection *C){
+  string state_id;
+  string name;
+  string temp;
+  std::ifstream ifs;
+  ifs.open(filename.c_str(), std::ifstream::in);
+  while (std::getline(ifs, temp)) {
+    stringstream ss(temp);
+    ss >> state_id >> name;
+    add_state(C, name);
+  }
+  ifs.close();  
+}
+
+void loadColor(string filename, connection *C){
+  string color_id;
+  string name;
+  string temp;
+  std::ifstream ifs;
+  ifs.open(filename.c_str(), std::ifstream::in);
+  while (std::getline(ifs, temp)) {
+    stringstream ss(temp);
+    ss >> color_id >> name;
+    add_color(C, name);
+  }
+  ifs.close();
+}
 
 void createTables(string filename, connection *C) {
   /* Create SQL statement */
@@ -108,10 +114,10 @@ int main (int argc, char *argv[])
 
 
   //TODO:2 load each table with rows from the provided source txt files
+  loadPlayer("player.txt", C);
+  loadTeam("team.txt", C);
   loadState("state.txt", C);
   loadColor("color.txt", C);
-  loadTeam("team.txt", C);
-  loadPlayer("player.txt", C);
     
 
   //Used for Test
