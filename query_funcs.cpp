@@ -152,7 +152,7 @@ void query2(connection *C, string team_color)
 {
   work W(*C);
 /* Create SQL statement */
-  string sql = "SELECT TEAM.NAME from TEAM ,COLOR  WHERE TEAM.COLOR_ID = COLOR.COLOR_ID AND COLOR.NAME = ";
+  string sql = "SELECT TEAM.NAME FROM TEAM ,COLOR  WHERE TEAM.COLOR_ID = COLOR.COLOR_ID AND COLOR.NAME = ";
   sql = sql + W.quote(team_color) + " ;";
   W.commit();
   nontransaction N(*C);
@@ -166,14 +166,43 @@ void query2(connection *C, string team_color)
 
 void query3(connection *C, string team_name)
 {
+work W(*C);
+  string sql = "SELECT PLAYER.FIRST_NAME, PLAYER.LAST_NAME FROM PLAYER, TEAM WHERE PLAYER.TEAM_ID = TEAM.TEAM_ID AND TEAM.name = " +
+               W.quote(team_name) + " ORDER BY PPG DESC;";
+  W.commit();
+  nontransaction N(*C);
+  result R(N.exec(sql));
+  cout << "FIRST_NAME LAST_NAME\n";
+  for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
+    cout << c[0].as<string>() << " " << c[1].as<string>() << "\n";
+  }
 }
 
 
 void query4(connection *C, string team_state, string team_color)
 {
+  work W(*C);
+  string sql = "SELECT PLAYER.FIRST_NAME, PLAYER.LAST_NAME, PLAYER.UNIFORM_NUM FROM PLAYER, TEAM, STATE, COLOR WHERE PLAYER.TEAM_ID"
+    " = TEAM.TEAM_ID AND TEAM.STATE_ID = STATE.STATE_ID AND TEAM.COLOR_ID = COLOR.COLOR_ID AND STATE.NAME = " + W.quote(team_state) +
+    "AND COLOR.NAME = " +  W.quote(team_color) + " );"; 
+  W.commit();
+  nontransaction N(*C);
+  result R(N.exec(sql));
+  cout << "FIRST_NAME LAST_NAME UNIFORM_NUM\n";
+  for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
+    cout << c[0].as<string>() << " " << c[1].as<string>() << " " << c[2].as<int>() << "\n";
+  }
 }
 
 
 void query5(connection *C, int num_wins)
 {
+  string sql = "SELECT PLAYER.FIRST_NAME, PLAYER.LAST_NAME, TEAM.NAME, TEAM.WINS FROM PLAYER, TEAM WHERE PLAYER.TEAM_ID"
+    " = TEAM.TEAM_ID AND TEAM.WINS >" + to_string(num_wins) + ";";
+  nontransaction N(*C);
+  result R(N.exec(sql));
+  cout << "FIRST_NAME LAST_NAME TEAM_NAME WINS\n";
+  for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
+    cout << c[0].as<string>() << " " << c[1].as<string>() << " " << c[2].as<string>() << " " << c[3].as<int>() << "\n";
+  }
 }
