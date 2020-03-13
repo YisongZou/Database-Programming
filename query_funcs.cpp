@@ -150,6 +150,17 @@ void query1(connection *C,
 
 void query2(connection *C, string team_color)
 {
+  work W(*C);
+/* Create SQL statement */
+  string sql = "SELECT TEAM.NAME from TEAM ,COLOR  WHERE TEAM.COLOR_ID = COLOR.COLOR_ID AND COLOR.NAME = ";
+  sql = sql + W.quote(team_color) + " ;";
+  W.commit();
+  nontransaction N(*C);
+  result R(N.exec(sql));
+  cout << "NAME\n";
+  for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
+    cout << c[0].as<string>() << "\n";
+  }
 }
 
 
