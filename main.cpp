@@ -108,16 +108,14 @@ int main (int argc, char *argv[])
     }
 
 
-  //TODO:1 create PLAYER, TEAM, STATE, and COLOR tables in the ACC_BBALL database
+  //TODO: create PLAYER, TEAM, STATE, and COLOR tables in the ACC_BBALL database
   createTables("create.sql", C);
 
-
-
-  //TODO:2 load each table with rows from the provided source txt files
-  loadPlayer("player.txt", C);
-  loadTeam("team.txt", C);
+  //TODO: load each table with rows from the provided source txt files
   loadState("state.txt", C);
   loadColor("color.txt", C);
+  loadTeam("team.txt", C);
+  loadPlayer("player.txt", C);
     
 
   //Used for Test
