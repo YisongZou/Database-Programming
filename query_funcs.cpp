@@ -1,6 +1,6 @@
 #include "query_funcs.h"
 #include <string>
-
+#include <iomanip>
 using namespace std;
 void add_player(connection *C, int team_id, int jersey_num, string first_name, string last_name,
                 int mpg, int ppg, int rpg, int apg, double spg, double bpg)
@@ -70,6 +70,81 @@ void query1(connection *C,
             int use_bpg, double min_bpg, double max_bpg
             )
 {
+
+  /* Create SQL statement */
+  string sql = "SELECT * from PLAYER";
+  int counter = 0;
+  if (use_mpg) {
+    if (counter == 0)
+      sql += " WHERE ";
+    else
+      sql += " AND ";
+    sql = sql +  "(mpg between " +  to_string(min_mpg) +  " AND " +  to_string(max_mpg) +  ") ";
+    counter ++;
+  }
+  if (use_ppg) {
+    if (counter == 0)
+      sql += " WHERE ";
+    else
+      sql += " AND ";
+    sql  = sql + "(ppg between " + to_string(min_ppg) +  " AND " + to_string(max_ppg) + ") ";
+    counter ++;
+  }
+
+  if (use_rpg) {
+    if (counter == 0)
+      sql +=" WHERE ";
+    else
+      sql += " AND ";
+    sql  = sql +  "(rpg between " +  to_string(min_rpg) + " AND " +  to_string(max_rpg) + ") ";
+    counter++;
+  }
+
+  if (use_apg) {
+    if (counter == 0)
+      sql += " WHERE ";
+    else
+      sql += " AND ";
+    sql = sql +  "(apg between " + to_string(min_apg) + " AND " +  to_string(max_apg) +  ") ";
+    counter ++;
+  }
+
+  if (use_spg) {
+    if (counter == 0)
+      sql += " WHERE ";
+    else
+      sql += " AND ";
+    sql  = sql +  "(spg between " + to_string(min_spg) +  " AND " + to_string(max_spg) + ") ";
+    counter ++;
+  }
+
+  if (use_bpg) {
+    if (counter == 0)
+      sql += " WHERE ";
+    else
+      sql += " AND ";
+    sql = sql + "(bpg between " + to_string(min_bpg) +  " AND " + to_string(max_bpg) + ") ";
+    counter ++;
+  }
+  
+  sql += ";";
+
+  
+  /* Create a non-transactional object. */
+  nontransaction N(*C);
+  
+  /* Execute SQL query */
+  result R( N.exec( sql ));
+
+   /* List down all the records */
+  cout << "PLAYER_ID TEAM_ID UNIFORM_NUM FIRST_NAME LAST_NAME MPG PPG RPG APG SPG BPG\n";
+  for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
+    cout << c[0].as<int>() << " " << c[1].as<int>() << " " << c[2].as<int>()
+         << " " << c[3].as<string>() << " " << c[4].as<string>() << " "
+         << c[5].as<int>() << " " << c[6].as<int>() << " " << c[7].as<int>()
+         << " " << c[8].as<int>() << " " << fixed << setprecision(1)
+         << c[9].as<double>() << " " << c[10].as<double>() << "\n";
+  }
 }
 
 
