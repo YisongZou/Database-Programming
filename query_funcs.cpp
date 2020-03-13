@@ -184,7 +184,7 @@ void query4(connection *C, string team_state, string team_color)
   work W(*C);
   string sql = "SELECT PLAYER.FIRST_NAME, PLAYER.LAST_NAME, PLAYER.UNIFORM_NUM FROM PLAYER, TEAM, STATE, COLOR WHERE PLAYER.TEAM_ID"
     " = TEAM.TEAM_ID AND TEAM.STATE_ID = STATE.STATE_ID AND TEAM.COLOR_ID = COLOR.COLOR_ID AND STATE.NAME = " + W.quote(team_state) +
-    "AND COLOR.NAME = " +  W.quote(team_color) + " );"; 
+    "AND COLOR.NAME = " +  W.quote(team_color) + ";"; 
   W.commit();
   nontransaction N(*C);
   result R(N.exec(sql));
