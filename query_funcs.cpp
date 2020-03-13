@@ -23,7 +23,7 @@ void add_team(connection *C, string name, int state_id, int color_id, int wins, 
       work W(*C);
   /* Create SQL statement */
       string sql = "INSERT INTO team (name, state_id, color_id, wins, losses)";
-      sql = sql + "VALUES (" + W.quote(name) +  ", " + to_string(state_id) + ", " to_string(color_id) +  ", " + to_string(wins) + ", " + to_string(losses) +  "); ";
+      sql = sql + "VALUES (" + W.quote(name) +  ", " + to_string(state_id) + ", "+ to_string(color_id) +  ", " + to_string(wins) + ", " + to_string(losses) +  "); ";
 
       /* Execute SQL query */
       W.exec( sql );
